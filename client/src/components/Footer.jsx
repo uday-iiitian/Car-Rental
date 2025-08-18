@@ -38,17 +38,17 @@ const Footer = () => {
                         <div>
                             <h3 className="font-semibold text-base text-gray-900 md:mb-3 mb-2">Contact</h3>
                             <div className="text-sm space-y-1 flex flex-col justify-center">
-                                <li class="list-none">1234 Luxury Drive</li>
-                                <li class="list-none">San Francisco, CA 10935</li>
-                                <li class="list-none">+1 89425927558</li>
-                                <li class="list-none">carChalao@example.com</li>
+                                <li className="list-none">1234 Luxury Drive</li>
+                                <li className="list-none">San Francisco, CA 10935</li>
+                                <li className="list-none">+1 89425927558</li>
+                                <li className="list-none">carChalao@example.com</li>
                             </div>
                         </div>
                 </div>
             </div>
             <div className='flex justify-between my-5'>
                 <p>©{new Date().getFullYear()} Brand. All rights reserved.</p>
-                <ul class="flex gap-2">
+                <ul className="flex gap-2">
                     <li>    <a href="#">Privacy</a></li>
                     <li>|</li>
                     <li>    <a href="#">Terms</a></li>
