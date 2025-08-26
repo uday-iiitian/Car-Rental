@@ -1,9 +1,13 @@
 import ImageKit from "imagekit";
+import dotenv from 'dotenv';
 
-var imagekit = new ImageKit({
-    publicKey : 'public_8DOLShK0Y/EolW74m1PD1KwEaP4=',
-    privateKey : 'private_PE/DgoL9qIqMvdZ4llaDtR0qgOM=',
-    urlEndpoint : 'https://ik.imagekit.io/zqnkd0ica'
+// Load environment variables
+dotenv.config();
+
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
 });
 
 export default imagekit;

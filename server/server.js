@@ -1,3 +1,7 @@
+import dotenv from 'dotenv'
+// Load environment variables before other imports
+dotenv.config()
+
 import express from 'express'
 import connectDB from './configs/db.js'
 import cors from 'cors'
@@ -7,6 +11,7 @@ import bookingRouter from './routes/bookingRoutes.js';
 
 const app = express()
 
+// Connect to database
 await connectDB();
 
 app.use(cors())
@@ -17,5 +22,5 @@ app.use('/api/user', userRouter);
 app.use('/api/owner', ownerRouter);
 app.use('/api/booking', bookingRouter);
 
-app.listen(3000, ()=>{console.log("server is running on port 3000")})
+app.listen(process.env.PORT, ()=>{console.log("server is running on port " + process.env.PORT)})
 

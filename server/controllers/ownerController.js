@@ -9,7 +9,6 @@ export const changeRoleToOwner = async (req, res) => {
     if (!req.user) {
       return res.status(401).json({ success: false, message: "Not authorized" });
     }
-
     const { _id } = req.user;
 
     await User.findByIdAndUpdate(_id, { role: "owner" });
@@ -104,25 +103,34 @@ export const getOwnerCars = async (req, res) => {
     res.json({success: false, error: error.message});
   }
 };
-
-export const toogleCarAvailability = async (req, res) => {
+export const toggleCarAvailability = async (req, res) => {
   try {
-    const { _id } = req.user;
-    const {carId} = req.body;
+    const { _id } = req.user ;
+    const { carId } = req.body ;
+
     const car = await Car.findById(carId);
 
-    if(carId.owner.toString() !== _id.toString()){
-      return res.json({success: false, message: "You are not authorized to change this car's availability"});
+    if (!car) {
+      return res.json({ success: false, message: "Car not found" });
+    } 
+
+    if (!_id || car.owner.toString() !== _id.toString()) {
+      return res.json({
+        success: false,
+        message: "You are not authorized to change this car's availability",
+      });
     }
+
     car.isAvailable = !car.isAvailable;
     await car.save();
 
-    res.json({success: true, message: "Car availability toggled successfully"});
+    res.json({ success: true, message: "Car availability toggled successfully", car });
   } catch (error) {
     console.log(error.message);
-    res.json({success: false, error: error.message});
+    res.json({ success: false, error: error.message });
   }
 };
+
 
 // api to delete car
 export const deleteCar = async (req, res) => {

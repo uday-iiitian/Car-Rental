@@ -1,19 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { assets, dummyCarData } from "../../assets/assets";
 import Title from "../../components/Title";
+import { set } from "mongoose";
+import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const ManageCars = () => {
-  const currency = import.meta.env.VITE_CURRENCY
+  const {currency, isOwner, axios} = useAppContext();
 
   const [cars, setCars] = useState([]);
 
   const fetchOwnerCars = async () => {
-    setCars(dummyCarData)
+      try {
+        const {data} = await axios.get('/api/owner/cars');
+        if(data.success){
+          setCars(data.cars);
+        }
+        else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+  }
+  const toggleAvailability = async (carId) => {
+      try {
+        const {data} = await axios.post('/api/owner/toggle-car', {carId});
+        if(data.success){
+          toast.success(data.message);
+          fetchOwnerCars();
+        }
+        else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
   }
 
   useEffect(()=>{
-    fetchOwnerCars()
-  },[])
+    if(isOwner) fetchOwnerCars()
+  },[isOwner])
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-2xl">
@@ -36,7 +63,7 @@ const ManageCars = () => {
           </thead>
           <tbody>
             {cars.map((car, index) => (
-              <tr key={car.id} className="border-b hover:bg-gray-50">
+              <tr key={car._id} className="border-b hover:bg-gray-50">
                 {/* Car Info */}
                 <td className="p-3 flex items-center space-x-3">
                   <img
@@ -73,7 +100,7 @@ const ManageCars = () => {
 
                 {/* Actions */}
                 <td className="p-3 flex items-center space-x-3">
-                  <img src={car.isAvailble ? assets.eye_close_icon : assets.eye_icon} alt="" className="cursor-pointer"/>
+                  <img onClick={()=>toggleAvailability(car._id)} src={car.isAvailble ? assets.eye_close_icon : assets.eye_icon} alt="" className="cursor-pointer"/>
                   <img src={assets.delete_icon} alt="" className="cursor-pointer"/>
                 </td>
               </tr>
