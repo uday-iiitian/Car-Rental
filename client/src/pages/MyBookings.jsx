@@ -1,22 +1,72 @@
 import React, { useEffect, useState } from 'react'
-import { assets, dummyMyBookingsData } from '../assets/assets'
+import { assets } from '../assets/assets'
 import Title from '../components/Title'
+import { useAppContext } from '../context/AppContext'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const MyBookings = () => {
-  const [booking, setBooking] = useState([])
-  const currency = import.meta.env.VITE_CURRENCY;
+  const [bookings, setBookings] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { currency, axios, user } = useAppContext()
+  const navigate = useNavigate()
 
   const fetchMyBookings = async () => {
-    setBooking(dummyMyBookingsData)
+    try {
+      setIsLoading(true)
+      const { data } = await axios.get('/api/booking/user')
+      console.log('API Response:', data) // Debug log
+      if (data.success) {
+        setBookings(data.bookings)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.error('Fetch bookings error:', error)
+      toast.error(error?.response?.data?.message || 'Failed to fetch bookings')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
+    console.log('Current user:', user) // Debug log
+    if (!user) {
+      toast.error('Please login to view your bookings')
+      navigate('/')
+      return
+    }
     fetchMyBookings()
-  }, [])
+  }, [user, navigate])
+
+  if (isLoading) {
+    return (
+      <div className='flex justify-center items-center h-[80vh]'>
+        <div className='animate-spin rounded-full h-14 w-14 border-4 border-gray-300 border-t-primary'></div>
+      </div>
+    )
+  }
+
+  if (!isLoading && bookings.length === 0) {
+    return (
+      <div className='px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-center'>
+        <Title
+          title='No Bookings Found'
+          subTitle='You have not made any bookings yet'
+          align='center'
+        />
+        <button 
+          onClick={() => navigate('/cars')}
+          className='mt-8 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90'
+        >
+          Browse Cars
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className='px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-sm max-w-7xl'>
-
       <Title
         title='My Bookings'
         subTitle='View and manage all your car bookings'
@@ -24,7 +74,7 @@ const MyBookings = () => {
       />
 
       <div>
-        {booking.map((booking, index) => (
+        {bookings.map((booking, index) => (
           <div
             key={booking._id}
             className='grid grid-cols-1 md:grid-cols-4 gap-6 p-6 border border-borderColor rounded-lg mt-5 first:mt-12 bg-white shadow-sm'

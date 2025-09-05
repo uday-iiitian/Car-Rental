@@ -1,3 +1,6 @@
+import Booking from "../models/Booking.js";
+import Car from "../models/car.js";
+
 // Function to Check Availability of Car for a given Date
 const checkAvailability = async (carId, pickupDate, returnDate) => {
   const bookings = await Booking.find({

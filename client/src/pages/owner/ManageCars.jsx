@@ -37,6 +37,20 @@ const ManageCars = () => {
         toast.error(error.message)
       }
   }
+  const deleteCar = async (carId) => {
+      try {
+        const {data} = await axios.post('/api/owner/delete-car', {carId});
+        if(data.success){
+          toast.success(data.message);
+          fetchOwnerCars();
+        }
+        else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+  }
 
   useEffect(()=>{
     if(isOwner) fetchOwnerCars()
@@ -89,19 +103,21 @@ const ManageCars = () => {
                 <td className="p-3">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      car.isAvaliable ?
+                      car.isAvailable ?
                          "bg-green-100 text-green-600"
                         : "bg-red-100 text-red-600"
                     }`}
                   >
-                    {car.isAvaliable ? "Available" : "Unavailable"}
+                    {car.isAvailable ? "Available" : "Unavailable"}
                   </span>
                 </td>
 
                 {/* Actions */}
                 <td className="p-3 flex items-center space-x-3">
+
                   <img onClick={()=>toggleAvailability(car._id)} src={car.isAvailble ? assets.eye_close_icon : assets.eye_icon} alt="" className="cursor-pointer"/>
-                  <img src={assets.delete_icon} alt="" className="cursor-pointer"/>
+
+                  <img onClick={()=>deleteCar(car._id)} src={assets.delete_icon} alt="" className="cursor-pointer"/>
                 </td>
               </tr>
             ))}

@@ -19,6 +19,7 @@ import Dashboard from './pages/owner/Dashboard'
 import AddCar from './pages/owner/AddCar'
 import ManageCars from './pages/owner/ManageCars'
 import ManageBookings from './pages/owner/ManageBookings'
+import Footer from './components/Footer'
 
 const App = () => {
   const { showLogin } = useAppContext();
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="manage-bookings" element={<ManageBookings />} />
         </Route>
       </Routes>
+      {!isOwnerPath && <Footer />}
     </div>
   )
 }

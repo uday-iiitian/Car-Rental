@@ -13,6 +13,11 @@ const Navbar = () => {
 
     const changeRole = async () => {
     try {
+        if(!user){
+            toast.error("Please login first");
+            setShowLogin(true);
+            return;
+        }
         const { data } = await axios.post('/api/owner/change-role');
         console.log(data);
         if (data.success) {
@@ -58,7 +63,7 @@ const Navbar = () => {
                     onClick={() => user ? logout() : setShowLogin(true)} 
                     className="cursor-pointer px-8 py-2 bg-primary bg-blue-500 hover:bg-primary-dull transition-all text-white rounded-lg"
                 >
-                    {token ? 'Logout' : 'Login'}
+                    {user ? 'Logout' : 'Login'}
                 </button>
             </div>
         </div>

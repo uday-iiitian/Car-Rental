@@ -139,8 +139,15 @@ export const deleteCar = async (req, res) => {
     const {carId} = req.body;
     const car = await Car.findById(carId);
 
-    if(carId.owner.toString() !== _id.toString()){
-      return res.json({success: false, message: "You are not authorized to change this car's availability"});
+    if (!car) {
+      return res.json({ success: false, message: "Car not found" });
+    } 
+
+    if (!_id || car.owner.toString() !== _id.toString()) {
+      return res.json({
+        success: false,
+        message: "You are not authorized to change this car's availability",
+      });
     }
 
     car.owner = null; // Remove owner reference
