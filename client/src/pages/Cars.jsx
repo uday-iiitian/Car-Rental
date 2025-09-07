@@ -4,7 +4,6 @@ import { assets, dummyCarData } from '../assets/assets';
 import CarCard from '../components/CarCard';
 import { useAppContext } from '../context/AppContext';
 import { useSearchParams } from 'react-router-dom';
-import { set } from 'mongoose';
 
 const Cars = () => {
 
@@ -34,7 +33,6 @@ const Cars = () => {
 
     setFilteredCars(filtered);
   };
-
 
   const searchCarAvailability = async () => {
     const {data} = await axios.post('/api/booking/check-availability', {carId, pickupDate, returnDate});

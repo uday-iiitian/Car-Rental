@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 
 const AddCar = () => {
 
-  const {axios, currency} = useAppContext();
+  const {axios, currency, setCars} = useAppContext();
 
   const [image, setImage] = useState(null)
 
@@ -23,44 +23,51 @@ const AddCar = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const resetForm = () => {
+    setImage(null);
+    setCar({
+      brand: "",
+      model: "",
+      year: 0,
+      pricePerDay: 0,
+      category: "",
+      transmission: "",
+      fuel_type: "",
+      seating_capacity: 0,
+      location: "",
+      description: "",
+    });
+  };
 
-  const onSubmitHandler = async (e) =>{
-  e.preventDefault()
-  if(isLoading) return null
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    if (isLoading) return;
 
-  setIsLoading(true)
-  try {
-      const formData = new FormData()
-      formData.append('image', image)
-      formData.append('carData', JSON.stringify(car))
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("carData", JSON.stringify(car));
 
-      const {data} = await axios.post('/api/owner/add-car', formData)
+      const { data } = await axios.post("/api/owner/add-car", formData);
 
-      if(data.success){
-          toast.success(data.message)
-          setImage(null)
-          setCar({
-            brand: "",
-            model: "",
-            year: 0,
-            pricePerDay: 0,
-            category: "",
-            transmission: "",
-            fuel_type: "",
-            seating_capacity: 0,
-            location: "",
-            description: ""
-          })
+      if (data.success) {
+        toast.success(data.message);
+
+        if (data.car) {
+          setCars((prev) => [...prev, data.car]);
+        }
+
+        resetForm();
+      } else {
+        toast.error(data.message);
       }
-      else{
-          toast.error(data.message)
-      }
-  } catch (error) {
-      toast.error(error.message)   // ✅ FIXED
-  } finally {
-      setIsLoading(false)
-  }
-}
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
 
 
